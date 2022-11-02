@@ -10,10 +10,14 @@ posts = []
 posts = json.loads(open("data.json", "r").read())
 
 @app.route("/")
+def index2():
+    return render_template("index.html")
+
+@app.route("/index.html")
 def index():
     return render_template("index.html")
 
-@app.route("/send", methods=["PUT"])
+@app.route("/api/v1/board/send", methods=["PUT"])
 def sendpost():
     print(request.json)
     message_ = request.json.get('message')
@@ -42,7 +46,7 @@ def sendpost():
     
     return Response("Created", status=201)
 
-@app.route("/get", methods=["GET"])
+@app.route("/api/v1/board/get", methods=["GET"])
 def getposts():
     start = escape(request.args.get("start"))
     
@@ -61,3 +65,25 @@ def getposts():
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
     return Response(json.dumps(posts[::-1][startint:endint]), status=200, mimetype="application/json")
+
+@app.route("/api/v1/user/create", methods=["POST"])
+def createuser():
+    if request.json == NONE:
+        return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
+
+    requestUsername = request.json.get("username")
+    requestEmail = request.json.get("email")
+    requestPassword = request.json.get("password")
+
+    if requestUsername == None:
+        return Response(json.dumps("No username was provided"), status=400, mimetype="application/json")
+
+    if requestEmail == None:
+        return Response(json.dumps("No email was provided"), status=400, mimetype="application/json")
+
+    if requestPassword == None:
+        return Response(json.dumps("No password was provided"), status=400, mimetype="application/json")
+
+
+
+app.run(host="192.168.144.6", port="8080")
