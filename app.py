@@ -148,16 +148,17 @@ def loginuser():
     myresult = mycursor.fetchone()
     
     if myresult == None:
-        return Response(json.dumps("No user exists with this email"), status=400, mimetype="application/json")
+        return Response(json.dumps("No user exists with this email!"), status=400, mimetype="application/json")
 
-    print(myresult[3] == requestPassword)
+    if(myresult[3] != requestPassword):
+        return Response(json.dumps("Invalid password!"), status=400, mimetype="application/json")
 
-    # curtime = int( time.time() )
-    # print(requestPassword)
-    # sql = f"INSERT INTO sessions (sessionid, userid, timestamp) VALUES (\"{str(uuid.uuid4())}\", )"
-    # mycursor.execute(sql)
+    curtime = int( time.time() )
+    print(requestPassword)
+    sql = f"INSERT INTO sessions (sessionid, userid, timestamp) VALUES (\"{str(uuid.uuid4())}\", \"{myresult[0]}\", \"{curtime}\")"
+    mycursor.execute(sql)
 
-    # mydb.commit()
+    mydb.commit()
     
     return Response(json.dumps("User created"), status=201, mimetype="application/json")
 
