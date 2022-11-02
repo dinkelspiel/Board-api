@@ -120,7 +120,7 @@ def createuser():
 
 
 @app.route("/api/v1/user/login", methods=["POST"])
-def createuser():
+def loginuser():
     if request.json == None:
         return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
 
