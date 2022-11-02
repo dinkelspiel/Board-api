@@ -110,9 +110,9 @@ def createuser():
     
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (%s, %s, %s, %s, %s)"
-    val = (requestUsername, requestEmail, requestPassword, int( time.time() ), int( time.time() ))
-    mycursor.execute(sql, val)
+    time = int( time.time() )
+    sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES ({requestUsername}, {requestEmail}, {requestPassword}, {time}, {time})"
+    mycursor.execute(sql)
 
     mydb.commit()
     
