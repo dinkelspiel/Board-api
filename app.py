@@ -163,4 +163,47 @@ def loginuser():
     return Response(json.dumps(sessionid), status=201, mimetype="application/json")
 
 
+@app.route("/api/v1/user/validatesession", methods=["POST"])
+def validatesession():
+    if request.json == None:
+        return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
+
+    requestSessionid = request.json.get("sessionid")
+ 
+
+    if requestSessionid == None:
+        return Response(json.dumps("No sessionid was provided"), status=400, mimetype="application/json")
+
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+    
+    mycursor = mydb.cursor()
+
+    mycursor.execute("SELECT * FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
+
+    myresult = mycursor.fetchone()
+   
+    if(int(time.time() - int(myresult[2])) > 2419200):
+        mycursor.execute("DELETE FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
+        return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
+
+    mycursor.execute("SELECT * FROM users WHERE id=\"" + myresult[1] + "\"")
+
+    myresult = mycursor.fetchone()
+    
+    result = {
+        "id": myresult[0],
+        "username": myresult[1],
+        "email": myresult[2],
+        "registered": myresult[4],
+        "passwordchanged": myresult[5] 
+    }
+
+    return Response(json.dumps(result), status=200, mimetype="application/json")
+
 app.run(host="192.168.144.6", port="8080")
