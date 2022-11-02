@@ -99,7 +99,8 @@ def createuser():
 
     myresult = mycursor.fetchone()
     
-    print(myresult)
+    if myresult == None:
+        return Response(json.dumps("User already exists with this email"), status=500, mimetype="application/json")
 
     mydb = mysql.connector.connect(
         host="localhost",
