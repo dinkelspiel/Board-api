@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, Response
+import mysql.connector
 import json, time
 from markupsafe import escape
 from flask_cors import CORS
@@ -84,6 +85,36 @@ def createuser():
     if requestPassword == None:
         return Response(json.dumps("No password was provided"), status=400, mimetype="application/json")
 
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="users"
+    )
+    
+    mycursor = mydb.cursor()
+
+    mycursor.execute("SELECT * FROM users WHERE email=" + requestEmail)
+
+    myresult = mycursor.fetchone()
+    
+    print(myresult)
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="users"
+    )
+    
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (%s, %s, %s, %s, %s)"
+    val = (requestUsername, requestEmail, requestPassword, int( time.time() ), int( time.time() ))
+    mycursor.execute(sql, val)
+
+    mydb.commit()
 
 
 app.run(host="192.168.144.6", port="8080")
