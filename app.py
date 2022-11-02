@@ -192,7 +192,7 @@ def validatesession():
         mycursor.execute("DELETE FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
         return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
 
-    mycursor.execute("SELECT * FROM users WHERE id=\"" + myresult[1] + "\"")
+    mycursor.execute("SELECT * FROM users WHERE id=\"" + str(myresult[1]) + "\"")
 
     myresult = mycursor.fetchone()
     
