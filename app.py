@@ -69,7 +69,7 @@ def getposts():
 
 @app.route("/api/v1/user/create", methods=["POST"])
 def createuser():
-    if request.json == NONE:
+    if request.json == None:
         return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
 
     requestUsername = request.json.get("username")
