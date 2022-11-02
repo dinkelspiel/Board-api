@@ -38,6 +38,8 @@ def sendpost():
         database="shykeiichicom"
     )
     
+    print(sendersessionid_)
+    
     mycursor = mydb.cursor()
 
     mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
