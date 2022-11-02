@@ -31,35 +31,45 @@ def sendpost():
     if(len(message_) > 300):
         return Response(json.dumps("Message is too long"), status=400, mimetype="application/json")
 
+    if sendersessionid_ != None:
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="willem",
+            password="Dinkel2006!",
+            database="shykeiichicom"
+        )
+    
+        mycursor = mydb.cursor()
+
+        mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+
+        myresult = mycursor.fetchone()
+
+        if(myresult != None):
+            if(int(time.time() - int(myresult[2])) > 2419200):
+                mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+                return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
+
+            senderid_ = myresult[1]
+            
     mydb = mysql.connector.connect(
         host="localhost",
         user="willem",
         password="Dinkel2006!",
         database="shykeiichicom"
     )
-    
-    print(sendersessionid_)
-    
+
     mycursor = mydb.cursor()
 
-    mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+    curtime = int( time.time() )
+    sql = ""
+    if(senderid_ != None):
+        sql = f"INSERT INTO board (userid, senderip, message, timestamp) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\")"
+    else:
+        sql = f"INSERT INTO board (senderip, message, timestamp) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\")"
+    mycursor.execute(sql)
 
-    myresult = mycursor.fetchone()
-
-    print(myresult)
-
-    if(int(time.time() - int(myresult[2])) > 2419200):
-        mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
-        return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
-
-    print(myresult)
-
-    # curtime = int( time.time() )
-    # print(requestPassword)
-    # sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
-    # mycursor.execute(sql)
-
-    # mydb.commit()
+    mydb.commit()
         
     return Response("Created", status=201)
 
@@ -72,6 +82,21 @@ def getposts():
     
     startint = int(start)
     endint = 0
+    
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+
+    mycursor = mydb.cursor()
+
+    mycursor.execute(f"SELECT Count(id) FROM board")
+
+    myresult = mycursor.fetchone()
+    
+    print(myresult)
     
     if(startint + 10 > len(posts)):
         endint = len(posts) - 1
