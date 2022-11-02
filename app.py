@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, Response
 import mysql.connector
-import json, time
+import json, time, uuid
 from markupsafe import escape
 from flask_cors import CORS
 
@@ -109,6 +109,31 @@ def createuser():
     if myresult != None:
         return Response(json.dumps("User already exists with this username"), status=500, mimetype="application/json")
 
+    curtime = int( time.time() )
+    print(requestPassword)
+    sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
+    mycursor.execute(sql)
+
+    mydb.commit()
+    
+    return Response(json.dumps("User created"), status=201, mimetype="application/json")
+
+
+@app.route("/api/v1/user/login", methods=["POST"])
+def createuser():
+    if request.json == None:
+        return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
+
+    requestEmail = request.json.get("email")
+    requestPassword = request.json.get("password")
+
+    if requestEmail == None:
+        return Response(json.dumps("No email was provided"), status=400, mimetype="application/json")
+
+    if requestPassword == None:
+        return Response(json.dumps("No password was provided"), status=400, mimetype="application/json")
+
+
     mydb = mysql.connector.connect(
         host="localhost",
         user="willem",
@@ -118,9 +143,18 @@ def createuser():
     
     mycursor = mydb.cursor()
 
+    mycursor.execute("SELECT * FROM users WHERE email=\"" + requestEmail + "\"")
+
+    myresult = mycursor.fetchone()
+    
+    if myresult == None:
+        return Response(json.dumps("No user exists with this email"), status=400, mimetype="application/json")
+
+    print(myresult)
+
     curtime = int( time.time() )
     print(requestPassword)
-    sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
+    sql = f"INSERT INTO sessions (sessionid, userid, timestamp) VALUES (\"{str(uuid.uuid4())}\", )"
     mycursor.execute(sql)
 
     mydb.commit()
