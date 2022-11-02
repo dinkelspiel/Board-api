@@ -112,6 +112,7 @@ def createuser():
     mycursor = mydb.cursor()
 
     curtime = int( time.time() )
+    print(requestPassword)
     sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
     mycursor.execute(sql)
 
