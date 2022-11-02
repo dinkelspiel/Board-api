@@ -115,6 +115,8 @@ def createuser():
     mycursor.execute(sql, val)
 
     mydb.commit()
+    
+    return Response(json.dumps("User created"), status=201, mimetype="application/json")
 
 
 app.run(host="192.168.144.6", port="8080")
