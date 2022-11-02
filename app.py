@@ -102,6 +102,13 @@ def createuser():
     if myresult != None:
         return Response(json.dumps("User already exists with this email"), status=500, mimetype="application/json")
 
+    mycursor.execute("SELECT * FROM users WHERE username=\"" + requestUsername + "\"")
+
+    myresult = mycursor.fetchone()
+    
+    if myresult != None:
+        return Response(json.dumps("User already exists with this username"), status=500, mimetype="application/json")
+
     mydb = mysql.connector.connect(
         host="localhost",
         user="willem",
