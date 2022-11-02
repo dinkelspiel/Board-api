@@ -30,33 +30,32 @@ def sendpost():
     
     if(len(message_) > 300):
         return Response(json.dumps("Message is too long"), status=400, mimetype="application/json")
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
     
-    if(sendersessionid_ != None):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="willem",
-            password="Dinkel2006!",
-            database="shykeiichicom"
-        )
-        
-        mycursor = mydb.cursor()
+    mycursor = mydb.cursor()
 
-        mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+    mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
 
-        myresult = mycursor.fetchone()
-    
-        if(int(time.time() - int(myresult[2])) > 2419200):
-            mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
-            return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
+    myresult = mycursor.fetchone()
 
-        print(myresult)
+    if(int(time.time() - int(myresult[2])) > 2419200):
+        mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+        return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
 
-        # curtime = int( time.time() )
-        # print(requestPassword)
-        # sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
-        # mycursor.execute(sql)
+    print(myresult)
 
-        # mydb.commit()
+    # curtime = int( time.time() )
+    # print(requestPassword)
+    # sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
+    # mycursor.execute(sql)
+
+    # mydb.commit()
         
     return Response("Created", status=201)
 
