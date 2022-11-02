@@ -98,15 +98,21 @@ def getposts():
     
     print(myresult)
     
-    if(startint + 10 > len(posts)):
-        endint = len(posts) - 1
+    if(startint + 10 > myresult): # Might have to change myresult heads up
+        endint = myresult - 1
     else:
         endint = startint + 10
  
     if(startint == endint + 1):
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
-    return Response(json.dumps(posts[::-1][startint:endint]), status=200, mimetype="application/json")
+    mycursor = mydb.cursor()
+
+    mycursor.execute(f"SELECT * FROM board ORDER BY id desc limit 10")
+
+    myresult = mycursor.fetchall()
+    
+    return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
 @app.route("/api/v1/user/create", methods=["POST"])
 def createuser():
