@@ -150,7 +150,7 @@ def loginuser():
     if myresult == None:
         return Response(json.dumps("No user exists with this email"), status=400, mimetype="application/json")
 
-    print(myresult)
+    print(myresult[3] == requestPassword)
 
     # curtime = int( time.time() )
     # print(requestPassword)
