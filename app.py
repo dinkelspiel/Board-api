@@ -154,13 +154,13 @@ def loginuser():
         return Response(json.dumps("Invalid password!"), status=400, mimetype="application/json")
 
     curtime = int( time.time() )
-    print(requestPassword)
-    sql = f"INSERT INTO sessions (sessionid, userid, timestamp) VALUES (\"{str(uuid.uuid4())}\", \"{myresult[0]}\", \"{curtime}\")"
+    sessionid = str(uuid.uuid4())
+    sql = f"INSERT INTO sessions (sessionid, userid, timestamp) VALUES (\"{sessionid}\", \"{myresult[0]}\", \"{curtime}\")"
     mycursor.execute(sql)
 
     mydb.commit()
     
-    return Response(json.dumps("User created"), status=201, mimetype="application/json")
+    return Response(json.dumps(sessionid), status=201, mimetype="application/json")
 
 
 app.run(host="192.168.144.6", port="8080")
