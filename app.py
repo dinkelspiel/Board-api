@@ -44,6 +44,8 @@ def sendpost():
 
     myresult = mycursor.fetchone()
 
+    print(myresult)
+
     if(int(time.time() - int(myresult[2])) > 2419200):
         mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
         return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
