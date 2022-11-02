@@ -106,11 +106,16 @@ def getposts():
     if(startint == endint + 1):
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
-    mycursor = mydb.cursor()
-
     mycursor.execute(f"SELECT * FROM board ORDER BY id desc limit 10")
 
     myresult = mycursor.fetchall()
+    
+    for i in range(len(myresult)):
+        if(myresult[i][1] == None):
+            continue
+        
+        mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
+        myresult[i][1] = mycursor.fetchone()
     
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
