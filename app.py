@@ -20,30 +20,57 @@ def index():
 
 @app.route("/api/v1/board/send", methods=["PUT"])
 def sendpost():
-    print(request.json)
-    message_ = request.json.get('message')
-    sender_ = request.json.get("sender")
+    message_ = request.json.get("message")
+    sendersessionid_ = request.json.get("sessionid")
+    senderid_ = None
     ip_ = request.remote_addr
 
     if(message_ == None):
         return Response(json.dumps("No message provided"), status=400, mimetype='application/json')
     
-    if(sender_ != None):
-        if(len(sender_) > 30):
-            return Response(json.dumps("Sender name too long"), status=400, mimetype='application/json')
-            
     if(len(message_) > 300):
         return Response(json.dumps("Message is too long"), status=400, mimetype="application/json")
     
-    posts.append({
-        "message": message_,
-        "sender": sender_,
-        "ip": ip_,
-        "posttime": int( time.time() )
-    })
-    file = open("data.json", "w")
-    print(posts)
-    file.write(json.dumps(posts))
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+    
+    print(sendersessionid_)
+    
+    # mycursor = mydb.cursor()
+
+    # mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+
+    # myresult = mycursor.fetchone()
+    
+    # if myresult != None:
+    #     return Response(json.dumps("User already exists with this email"), status=500, mimetype="application/json")
+
+    # mycursor.execute("SELECT * FROM users WHERE username=\"" + requestUsername + "\"")
+
+    # myresult = mycursor.fetchone()
+    
+    # if myresult != None:
+    #     return Response(json.dumps("User already exists with this username"), status=500, mimetype="application/json")
+
+    # curtime = int( time.time() )
+    # print(requestPassword)
+    # sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
+    # mycursor.execute(sql)
+
+    # mydb.commit()
+    # posts.append({
+    #     "message": message_,
+    #     "sender": sender_,
+    #     "ip": ip_,
+    #     "posttime": int( time.time() )
+    # })
+    # file = open("data.json", "w")
+    # print(posts)
+    # file.write(json.dumps(posts))
     
     return Response("Created", status=201)
 
