@@ -95,7 +95,7 @@ def createuser():
     
     mycursor = mydb.cursor()
 
-    mycursor.execute("SELECT * FROM users WHERE email=" + requestEmail)
+    mycursor.execute("SELECT * FROM users WHERE email=\"" + requestEmail + "\"")
 
     myresult = mycursor.fetchone()
     
