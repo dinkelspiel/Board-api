@@ -239,6 +239,9 @@ def validatesession():
     mycursor.execute("SELECT * FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
 
     myresult = mycursor.fetchone()
+    
+    if myresult == None:
+        return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
    
     if(int(time.time() - int(myresult[2])) > 2419200):
         mycursor.execute("DELETE FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
