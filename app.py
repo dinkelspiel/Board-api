@@ -98,8 +98,8 @@ def getposts():
     
     print(myresult)
     
-    if(startint + 10 > myresult): # Might have to change myresult heads up
-        endint = myresult - 1
+    if(startint + 10 > myresult[0]): # Might have to change myresult heads up
+        endint = myresult[0] - 1
     else:
         endint = startint + 10
  
