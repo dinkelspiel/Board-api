@@ -152,12 +152,12 @@ def loginuser():
 
     print(myresult)
 
-    curtime = int( time.time() )
-    print(requestPassword)
-    sql = f"INSERT INTO sessions (sessionid, userid, timestamp) VALUES (\"{str(uuid.uuid4())}\", )"
-    mycursor.execute(sql)
+    # curtime = int( time.time() )
+    # print(requestPassword)
+    # sql = f"INSERT INTO sessions (sessionid, userid, timestamp) VALUES (\"{str(uuid.uuid4())}\", )"
+    # mycursor.execute(sql)
 
-    mydb.commit()
+    # mydb.commit()
     
     return Response(json.dumps("User created"), status=201, mimetype="application/json")
 
