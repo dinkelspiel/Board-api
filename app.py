@@ -311,11 +311,11 @@ def usersgetall():
     
     mycursor.execute("SELECT * FROM users")
 
-    mycursor.fetchall()
+    myresult = mycursor.fetchall()
     
     users = []
     
-    for x in mycursor:
+    for x in myresult:
         result = {
             "id": x[0],
             "username": x[1],
