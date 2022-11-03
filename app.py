@@ -390,6 +390,8 @@ def userremove():
 
     print(requestUserID)
     mycursor.execute(f"DELETE FROM users WHERE id={requestUserID}")
+    
+    mydb.commit()
         
     return Response(json.dumps("User removed"), status=200, mimetype="application/json")
 
