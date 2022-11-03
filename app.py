@@ -261,4 +261,72 @@ def validatesession():
 
     return Response(json.dumps(result), status=200, mimetype="application/json")
 
+
+@app.route("/api/v1/users/getall", methods=["GET"])
+def usersgetall():
+    if request.args == None:
+        return Response(json.dumps("No arguments were provided"), status=400, mimetype="application/json")
+
+    requestSessionid = request.args.get("sessionid")
+ 
+    if 'sessionid' in request.args:
+        requestSessionid = str(escape(request.args["sessionid"])).lower()
+    else:
+        return Response(json.dumps("No sessionid was provided."), status=400, mimetype='application/json')
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+    
+    mycursor = mydb.cursor()
+
+    mycursor.execute("SELECT * FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
+
+    myresult = mycursor.fetchone()
+    
+    if myresult == None:
+        return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
+   
+    if(int(time.time() - int(myresult[2])) > 2419200):
+        mycursor.execute("DELETE FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
+        return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
+
+    mycursor.execute("SELECT * FROM users WHERE id=\"" + str(myresult[1]) + "\"")
+
+    myresult = mycursor.fetchone()
+    
+    result = {
+        "id": myresult[0],
+        "username": myresult[1],
+        "email": myresult[2],
+        "registered": myresult[4],
+        "passwordchanged": myresult[5] 
+    }
+    
+    if(result["id"] != 1):
+        return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
+    
+    mycursor.execute("SELECT * FROM users")
+
+    mycursor.fetchall()
+    
+    users = []
+    
+    for x in mycursor:
+        result = {
+            "id": x[0],
+            "username": x[1],
+            "email": x[2],
+            "registered": x[4],
+            "passwordchanged": x[5] 
+        }
+        
+        users.append(result)
+        
+    return Response(json.dumps(users), status=200, mimetype="application/json")
+
+
 app.run(host="192.168.144.6", port="8080")
