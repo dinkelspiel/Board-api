@@ -323,9 +323,7 @@ def usersgetall():
             "registered": x[4],
             "passwordchanged": x[5] 
         }
-        print(x)
-        print(result)
-        
+
         users.append(result)
         
     return Response(json.dumps(users), status=200, mimetype="application/json")
