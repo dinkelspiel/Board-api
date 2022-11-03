@@ -330,19 +330,19 @@ def usersgetall():
 
 
 @app.route("/api/v1/user/delete", methods=["POST"])
-def userremove():
+def usersgetall():
     if request.json == None:
-        return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
+        return Response(json.dumps("No body were provided"), status=400, mimetype="application/json")
 
     requestSessionid = request.json.get("sessionid")
  
     if requestSessionid == None:
-        return Response(json.dumps("No sessionid was provided"), status=401, mimetype="application/json")
+        return Response(json.dumps("No sessionid was provided"), status=400, mimetype="application/json")
 
     requestUserID = request.json.get("removeuserid")
  
     if requestUserID == None:
-        return Response(json.dumps("No removeuserid was provided"), status=402, mimetype="application/json")
+        return Response(json.dumps("No removeuserid was provided"), status=400, mimetype="application/json")
 
 
     mydb = mysql.connector.connect(
@@ -359,7 +359,7 @@ def userremove():
     myresult = mycursor.fetchone()
     
     if myresult == None:
-        return Response(json.dumps("Invalid sessionid"), status=403, mimetype="application/json")
+        return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
    
     if(int(time.time() - int(myresult[2])) > 2419200):
         mycursor.execute("DELETE FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
@@ -378,7 +378,7 @@ def userremove():
     }
     
     if(result["id"] != 1):
-        return Response(json.dumps("User not admin"), status=404, mimetype="application/json")
+        return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
     
     
     mycursor.execute(f"SELECT * FROM users WHERE id=\"{requestUserID}\"")
@@ -386,7 +386,7 @@ def userremove():
     myresult = mycursor.fetchone()
     
     if(myresult == None):
-        return Response(json.dumps("Userid to remove is not valid"), status=405, mimetype="application/json")
+        return Response(json.dumps("Userid to remove is not valid"), status=400, mimetype="application/json")
 
     mycursor.execute(f"DELETE FROM users WHERE id=\"{str(requestUserID)}\"")
         
