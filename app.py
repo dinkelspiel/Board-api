@@ -330,7 +330,7 @@ def usersgetall():
 
 
 @app.route("/api/v1/user/delete", methods=["POST"])
-def usersgetall():
+def userremove():
     if request.json == None:
         return Response(json.dumps("No body were provided"), status=400, mimetype="application/json")
 
