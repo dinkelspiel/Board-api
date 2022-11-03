@@ -388,7 +388,8 @@ def userremove():
     if(myresult == None):
         return Response(json.dumps("Userid to remove is not valid"), status=400, mimetype="application/json")
 
-    mycursor.execute(f"DELETE FROM users WHERE id=\"{str(requestUserID)}\"")
+    print(requestUserID)
+    mycursor.execute(f"DELETE FROM users WHERE id={requestUserID}")
         
     return Response(json.dumps("User removed"), status=200, mimetype="application/json")
 
