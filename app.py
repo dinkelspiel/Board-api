@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, send_file
 import mysql.connector
 import json, time, uuid
 from markupsafe import escape
@@ -10,13 +10,117 @@ CORS(app)
 posts = []
 posts = json.loads(open("data.json", "r").read())
 
-@app.route("/")
-def index2():
-    return render_template("index.html")
+@app.route("/admin.html", methods=["GET"])
+def adminhtml():
+    return send_file("./22widissisnu/" + "admin.html")
 
-@app.route("/index.html")
-def index():
-    return render_template("index.html")
+@app.route("/board.html", methods=["GET"])
+def boardhtml():
+    return send_file("./22widissisnu/" + "board.html")
+
+@app.route("/medialog.html", methods=["GET"])
+def medialoghtml():
+    return send_file("./22widissisnu/" + "medialog.html")
+
+@app.route("/login.html", methods=["GET"])
+def loginhtml():
+    return send_file("./22widissisnu/" + "login.html")
+
+@app.route("/index.html", methods=["GET"])
+def indexhtml():
+    return send_file("./22widissisnu/" + "index.html")
+
+@app.route("/pages/login/login.css", methods=["GET"])
+def pagesloginlogincss():
+    return send_file("./22widissisnu/" + "pages/login/login.css")
+
+@app.route("/pages/login/login.js", methods=["GET"])
+def pagesloginloginjs():
+    return send_file("./22widissisnu/" + "pages/login/login.js")
+
+@app.route("/pages/board/board.js", methods=["GET"])
+def pagesboardboardjs():
+    return send_file("./22widissisnu/" + "pages/board/board.js")
+
+@app.route("/pages/board/board.css", methods=["GET"])
+def pagesboardboardcss():
+    return send_file("./22widissisnu/" + "pages/board/board.css")
+
+@app.route("/pages/admin/admin.css", methods=["GET"])
+def pagesadminadmincss():
+    return send_file("./22widissisnu/" + "pages/admin/admin.css")
+
+@app.route("/pages/admin/admin.js", methods=["GET"])
+def pagesadminadminjs():
+    return send_file("./22widissisnu/" + "pages/admin/admin.js")
+
+@app.route("/pages/index/index.css", methods=["GET"])
+def pagesindexindexcss():
+    return send_file("./22widissisnu/" + "pages/index/index.css")
+
+@app.route("/pages/index/images/login.png", methods=["GET"])
+def pagesindeximagesloginpng():
+    return send_file("./22widissisnu/" + "pages/index/images/login.png")
+
+@app.route("/pages/index/images/board.png", methods=["GET"])
+def pagesindeximagesboardpng():
+    return send_file("./22widissisnu/" + "pages/index/images/board.png")
+
+@app.route("/pages/medialog/medialog.css", methods=["GET"])
+def pagesmedialogmedialogcss():
+    return send_file("./22widissisnu/" + "pages/medialog/medialog.css")
+
+@app.route("/images/light.svg", methods=["GET"])
+def imageslightsvg():
+    return send_file("./22widissisnu/" + "images/light.svg")
+
+@app.route("/images/favicon.png", methods=["GET"])
+def imagesfaviconpng():
+    return send_file("./22widissisnu/" + "images/favicon.png")
+
+@app.route("/images/dark.svg", methods=["GET"])
+def imagesdarksvg():
+    return send_file("./22widissisnu/" + "images/dark.svg")
+
+@app.route("/images/youtube.png", methods=["GET"])
+def imagesyoutubepng():
+    return send_file("./22widissisnu/" + "images/youtube.png")
+
+@app.route("/styles/styles_dark.css", methods=["GET"])
+def stylesstyles_darkcss():
+    return send_file("./22widissisnu/" + "styles/styles_dark.css")
+
+@app.route("/styles/global.css", methods=["GET"])
+def stylesglobalcss():
+    return send_file("./22widissisnu/" + "styles/global.css")
+
+@app.route("/styles/styles_light.css", methods=["GET"])
+def stylesstyles_lightcss():
+    return send_file("./22widissisnu/" + "styles/styles_light.css")
+
+@app.route("/scripts/candyland.js", methods=["GET"])
+def scriptscandylandjs():
+    return send_file("./22widissisnu/" + "scripts/candyland.js")
+
+@app.route("/scripts/theme.js", methods=["GET"])
+def scriptsthemejs():
+    return send_file("./22widissisnu/" + "scripts/theme.js")
+
+@app.route("/scripts/init.js", methods=["GET"])
+def scriptsinitjs():
+    return send_file("./22widissisnu/" + "scripts/init.js")
+
+@app.route("/scripts/hash.js", methods=["GET"])
+def scriptshashjs():
+    return send_file("./22widissisnu/" + "scripts/hash.js")
+
+@app.route("/scripts/login.js", methods=["GET"])
+def scriptsloginjs():
+    return send_file("./22widissisnu/" + "scripts/login.js")
+
+@app.route("/scripts/header.js", methods=["GET"])
+def scriptsheaderjs():
+    return send_file("./22widissisnu/" + "scripts/header.js")
 
 @app.route("/api/v1/board/send", methods=["PUT"])
 def sendpost():
