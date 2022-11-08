@@ -242,9 +242,22 @@ def getposts():
     
         replycount = mycursor.fetchone();
 
+        mycursor.execute(f"SELECT parentid FROM board WHERE id={myresult[i][0]}")
+
+        postparentid = mycursor.fetchone();
+
         mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
         
-        myresult[i] = (myresult[i][0], mycursor.fetchone()[0], myresult[i][2], myresult[i][3], myresult[i][4], replycount[0])
+        myresult[i] = {
+            "id": myresult[i][0], 
+            "userid": myresult[i][1],
+            "username": mycursor.fetchone()[0], 
+            "ip": myresult[i][2], 
+            "message": myresult[i][3], 
+            "timestamp": myresult[i][4], 
+            "replycount": replycount[0], 
+            "parentid": postparentid
+        }
     
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
@@ -274,9 +287,22 @@ def getpost():
     mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[0]}")
 
     replycount = mycursor.fetchone();
+    
+    mycursor.execute(f"SELECT parentid FROM board WHERE id={myresult[0]}")
+
+    postparentid = mycursor.fetchone();
 
     mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[1]}\"")
-    myresult = (myresult[0], mycursor.fetchone()[0], myresult[2], myresult[3], myresult[4], replycount[0])
+    myresult = {
+        "id": myresult[0], 
+        "userid": myresult[1],
+        "username": mycursor.fetchone()[0], 
+        "ip": myresult[2], 
+        "message": myresult[3], 
+        "timestamp": myresult[4], 
+        "replycount": replycount[0], 
+        "parentid": postparentid
+    }
 
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
