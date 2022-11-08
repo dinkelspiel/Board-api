@@ -180,6 +180,7 @@ def sendpost():
 @app.route("/api/v1/board/get", methods=["GET"])
 def getposts():
     start = escape(request.args.get("start"))
+    parentid = escape(request.args.get("parentid"))
     
     if(not start.isdecimal()):
         return Response(json.dumps("Not a number"), status=400, mimetype="application/json")
@@ -210,7 +211,10 @@ def getposts():
     if(startint == endint + 1):
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
-    mycursor.execute(f"SELECT * FROM board ORDER BY id desc limit 10 OFFSET {startint}")
+    if(parentid == None):
+        mycursor.execute(f"SELECT * FROM board ORDER BY id desc limit 10 OFFSET {startint}")
+    else:
+        mycursor.execute(f"SELECT * FROM board WHERE parentid={parentid} ORDER BY id desc limit 10 OFFSET {startint}")
 
     myresult = mycursor.fetchall()
     
