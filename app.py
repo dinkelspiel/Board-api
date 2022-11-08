@@ -244,7 +244,7 @@ def getposts():
 
         mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
         
-        myresult[i] = (myresult[i][0], mycursor.fetchone()[0], myresult[i][2], myresult[i][3], myresult[i][4], replycount)
+        myresult[i] = (myresult[i][0], mycursor.fetchone()[0], myresult[i][2], myresult[i][3], myresult[i][4], replycount[0])
     
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
