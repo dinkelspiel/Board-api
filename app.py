@@ -210,7 +210,7 @@ def getposts():
         database="shykeiichicom"
     )
 
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor(buffered=True)
 
     mycursor.execute(f"SELECT Count(id) FROM board")
 
