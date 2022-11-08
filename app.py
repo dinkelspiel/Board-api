@@ -239,6 +239,13 @@ def getposts():
             continue
         
         mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
+        
+        
+        mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[i][0]}")
+    
+        myresult2 = mycursor.fetchone();
+        print(myresult2)
+        
         myresult[i] = (myresult[i][0], mycursor.fetchone()[0], myresult[i][2], myresult[i][3], myresult[i][4])
     
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
