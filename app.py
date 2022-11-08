@@ -256,7 +256,7 @@ def getposts():
             "message": myresult[i][3], 
             "timestamp": myresult[i][4], 
             "replycount": replycount[0], 
-            "parentid": postparentid
+            "parentid": postparentid[0]
         }
     
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
@@ -301,7 +301,7 @@ def getpost():
         "message": myresult[3], 
         "timestamp": myresult[4], 
         "replycount": replycount[0], 
-        "parentid": postparentid
+        "parentid": postparentid[0]
     }
 
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
