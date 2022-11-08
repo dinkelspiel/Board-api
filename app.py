@@ -128,6 +128,7 @@ def sendpost():
     sendersessionid_ = request.json.get("sessionid")
     senderid_ = None
     ip_ = request.remote_addr
+    parentid_ = request.json.get("parentid")
 
     if(message_ == None):
         return Response(json.dumps("No message provided"), status=400, mimetype='application/json')
@@ -167,10 +168,16 @@ def sendpost():
 
     curtime = int( time.time() )
     sql = ""
-    if(senderid_ != None):
-        sql = f"INSERT INTO board (userid, senderip, message, timestamp) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\")"
+    if(parentid_ == None):
+        if(senderid_ != None):
+            sql = f"INSERT INTO board (userid, senderip, message, timestamp) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\")"
+        else:
+            sql = f"INSERT INTO board (senderip, message, timestamp) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\")"
     else:
-        sql = f"INSERT INTO board (senderip, message, timestamp) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\")"
+        if(senderid_ != None):
+            sql = f"INSERT INTO board (userid, senderip, message, timestamp, parentid) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\", \"{parentid_}\")"
+        else:
+            sql = f"INSERT INTO board (senderip, message, timestamp, parentid) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\", \"{parentid_}\")"
     mycursor.execute(sql)
 
     mydb.commit()
@@ -207,7 +214,7 @@ def getposts():
         endint = myresult[0] - 1
     else:
         endint = startint + 10
- 
+    
     if(startint == endint + 1):
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
