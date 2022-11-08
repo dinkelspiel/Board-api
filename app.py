@@ -227,6 +227,37 @@ def getposts():
     
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
+
+@app.route("/api/v1/board/getsingle", methods=["GET"])
+def getposts():
+    postid_ = escape(request.args.get("postid"))
+    
+    if(not postid_.isdecimal()):
+        return Response(json.dumps("Postid is not a number"), status=400, mimetype="application/json")
+    
+    postid = int(postid_)
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+
+    mycursor = mydb.cursor()
+    
+    mycursor.execute(f"SELECT * FROM board WHERE id={postid}")
+    
+    myresult = mycursor.fetchone()
+
+    print(str(myresult))
+    
+    # mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
+    # myresult[i] = (myresult[i][0], mycursor.fetchone(), myresult[i][2], myresult[i][3], myresult[i][4])
+    
+    return Response(json.dumps(myresult), status=200, mimetype="application/json")
+
+
 @app.route("/api/v1/user/create", methods=["POST"])
 def createuser():
     if request.json == None:
