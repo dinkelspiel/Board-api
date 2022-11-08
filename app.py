@@ -232,9 +232,6 @@ def getposts():
     myresult = mycursor.fetchall()
     
     for i in range(len(myresult)):
-        if(myresult[i][1] == None):
-            continue
-        
         mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[i][0]}")
     
         replycount = mycursor.fetchone();
@@ -243,12 +240,13 @@ def getposts():
 
         postparentid = mycursor.fetchone();
 
-        mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
+        if(myresult[i][1] != None):
+            mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
         
         myresult[i] = {
             "id": myresult[i][0], 
             "userid": myresult[i][1],
-            "username": mycursor.fetchone()[0], 
+            "username": mycursor.fetchone()[0] if myresult[i][1] != None else myresult[i][1], 
             "ip": myresult[i][2], 
             "message": myresult[i][3], 
             "timestamp": myresult[i][4], 
