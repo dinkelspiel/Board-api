@@ -185,6 +185,8 @@ def getposts():
     if(not start.isdecimal()):
         return Response(json.dumps("Not a number"), status=400, mimetype="application/json")
     
+    print(parentid)
+    
     startint = int(start)
     endint = 0
     
