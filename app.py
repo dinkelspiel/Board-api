@@ -271,7 +271,7 @@ def getpost():
     
     myresult = mycursor.fetchone()
 
-    mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[i][0]}")
+    mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[0]}")
 
     replycount = mycursor.fetchone();
 
