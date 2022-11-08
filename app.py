@@ -30,6 +30,10 @@ def loginhtml():
 def indexhtml():
     return send_file("./22widissisnu/" + "index.html")
 
+@app.route("/reply.html", methods=["GET"])
+def replyhtml():
+    return send_file("./22widissisnu/" + "reply.html")
+
 @app.route("/pages/login/login.css", methods=["GET"])
 def pagesloginlogincss():
     return send_file("./22widissisnu/" + "pages/login/login.css")
@@ -69,6 +73,10 @@ def pagesindeximagesboardpng():
 @app.route("/pages/medialog/medialog.css", methods=["GET"])
 def pagesmedialogmedialogcss():
     return send_file("./22widissisnu/" + "pages/medialog/medialog.css")
+
+@app.route("/pages/reply/reply.js", methods=["GET"])
+def pagesreplyreplyjs():
+    return send_file("./22widissisnu/" + "pages/reply/reply.js")
 
 @app.route("/images/light.svg", methods=["GET"])
 def imageslightsvg():
