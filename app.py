@@ -184,9 +184,7 @@ def getposts():
     
     if(not start.isdecimal()):
         return Response(json.dumps("Not a number"), status=400, mimetype="application/json")
-    
-    print(parentid)
-    
+
     startint = int(start)
     endint = 0
     
@@ -213,7 +211,7 @@ def getposts():
     if(startint == endint + 1):
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
-    if(parentid != None):
+    if(parentid == None):
         mycursor.execute(f"SELECT * FROM board ORDER BY id desc limit 10 OFFSET {startint}")
     else:
         mycursor.execute(f"SELECT * FROM board WHERE parentid={parentid} ORDER BY id desc limit 10 OFFSET {startint}")
