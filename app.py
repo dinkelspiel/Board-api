@@ -216,8 +216,6 @@ def getposts():
 
     myresult = mycursor.fetchone()
     
-    print(myresult)
-    
     if(startint + 10 > myresult[0]): # Might have to change myresult heads up
         endint = myresult[0] - 1
     else:
@@ -226,7 +224,6 @@ def getposts():
     if(startint == endint + 1):
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
-    print(str(None))
     if(str(parentid) == "None"):
         mycursor.execute(f"SELECT * FROM board WHERE parentid is NULL ORDER BY id desc limit 10 OFFSET {startint}")
     else:
@@ -350,7 +347,7 @@ def createuser():
         return Response(json.dumps("User already exists with this username"), status=500, mimetype="application/json")
 
     curtime = int( time.time() )
-    print(requestPassword)
+
     sql = f"INSERT INTO users (username, email, password, registered, passwordchanged) VALUES (\"{requestUsername}\", \"{requestEmail}\", \"{requestPassword}\", \"{curtime}\", \"{curtime}\")"
     mycursor.execute(sql)
 
@@ -576,7 +573,6 @@ def userremove():
     if(myresult == None):
         return Response(json.dumps("Userid to remove is not valid"), status=400, mimetype="application/json")
 
-    print(requestUserID)
     mycursor.execute(f"DELETE FROM users WHERE id={requestUserID}")
     
     mydb.commit()
