@@ -229,7 +229,7 @@ def getposts():
 
 
 @app.route("/api/v1/board/getsingle", methods=["GET"])
-def getposts():
+def getpost():
     postid_ = escape(request.args.get("postid"))
     
     if(not postid_.isdecimal()):
