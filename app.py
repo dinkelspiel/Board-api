@@ -251,7 +251,7 @@ def getpost():
     myresult = mycursor.fetchone()
 
     mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[1]}\"")
-    myresult = (myresult[0], mycursor.fetchone(), myresult[2], myresult[3], myresult[4])
+    myresult = (myresult[0], mycursor.fetchone()[0], myresult[2], myresult[3], myresult[4])
 
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
