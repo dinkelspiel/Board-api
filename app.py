@@ -220,7 +220,7 @@ def getposts():
     
     print(str(None))
     if(str(parentid) == "None"):
-        mycursor.execute(f"SELECT * FROM board ORDER BY id desc limit 10 OFFSET {startint}")
+        mycursor.execute(f"SELECT * FROM board WHERE parentid is NULL ORDER BY id desc limit 10 OFFSET {startint}")
     else:
         mycursor.execute(f"SELECT * FROM board WHERE parentid={parentid} ORDER BY id desc limit 10 OFFSET {startint}")
 
