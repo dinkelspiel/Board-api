@@ -389,7 +389,7 @@ def ratepost():
     mycursor.execute(sql)
     mydb.commit()
         
-    return Response("Rated post", status=200)
+    return Response("Rated post" if rating == None else "Updated post rating", status=200 if rating == None else 201)
 
 
 @app.route("/api/v1/user/create", methods=["POST"])
