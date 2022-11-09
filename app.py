@@ -302,7 +302,7 @@ def getpost():
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
 
-@app.route("/api/v1/board/rate", methods=["POST"])
+@app.route("/api/v1/board/rate", methods=["PUT"])
 def ratepost():
     rating_ = request.json.get("rating")
     sendersessionid_ = request.json.get("sessionid")
