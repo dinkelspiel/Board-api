@@ -259,7 +259,9 @@ def getposts():
         if user != None:
             mycursor.execute(f"SELECT rating FROM ratings WHERE userid=\"{user[0]}\" AND postid=\"{myresult[i][0]}\"")
 
-            userrating = mycursor.fetchone()[0];
+            userrating = mycursor.fetchone();
+            if(userrating != None):
+                userrating = userrating[0]
         
         mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[i][0]}")
     
@@ -356,7 +358,9 @@ def getpost():
     if user != None:
         mycursor.execute(f"SELECT rating FROM ratings WHERE userid=\"{user[0]}\" AND postid=\"{myresult[i][0]}\"")
 
-        userrating = mycursor.fetchone()[0];
+        userrating = mycursor.fetchone();
+        if(userrating != None):
+            userrating = userrating[0]
     
     mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[1]}\"")
     myresult = {
