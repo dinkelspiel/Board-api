@@ -242,6 +242,15 @@ def getposts():
 
         if(myresult[i][1] != None):
             mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
+            
+            
+        mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{myresult[i][0]}\" AND rating=1;")
+
+        positiveratings = mycursor.fetchone()[0];
+        
+        mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{myresult[i][0]}\" AND rating=0;")
+
+        negativeratings = mycursor.fetchone()[0];
         
         myresult[i] = {
             "id": myresult[i][0], 
@@ -251,7 +260,9 @@ def getposts():
             "message": myresult[i][3], 
             "timestamp": myresult[i][4], 
             "replycount": replycount[0], 
-            "parentid": postparentid[0]
+            "parentid": postparentid[0],
+            "positiveratings": positiveratings,
+            "negativeratings": negativeratings
         }
     
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
@@ -289,13 +300,11 @@ def getpost():
     
     mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{postid_}\" AND rating=1;")
 
-    positiveratings = mycursor.fetchone();
+    positiveratings = mycursor.fetchone()[0];
     
     mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{postid_}\" AND rating=0;")
 
-    negativeratings = mycursor.fetchone();
-    
-    print(f"{positiveratings} {negativeratings}")
+    negativeratings = mycursor.fetchone()[0];
 
     mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[1]}\"")
     myresult = {
