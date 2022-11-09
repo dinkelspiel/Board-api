@@ -302,6 +302,73 @@ def getpost():
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
 
 
+@app.route("/api/v1/board/rate", methods=["GET"])
+def ratepost():
+    rating_ = request.json.get("rating")
+    sendersessionid_ = request.json.get("sessionid")
+    postid_ = request.json.get("postid")
+
+    if(rating_ == None):
+        return Response(json.dumps("No message provided"), status=400, mimetype='application/json')
+    
+    if(sendersessionid_ == None):
+        return Response(json.dumps("No Sessionid provided"), status=400, mimetype="application/json")
+
+    if(postid_ == None):
+        return Response(json.dumps("No postid provided"), status=400, mimetype="application/json")
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+
+    mycursor = mydb.cursor()
+
+    mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+
+    usersession = mycursor.fetchone()
+
+    usersessionid = None
+
+    if(usersession != None):
+        if(int(time.time() - int(usersession[2])) > 2419200):
+            mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
+            return Response(json.dumps("Sessionid expired"), status=400, mimetype="application/json")
+        usersessionid = usersession[1]
+
+    else:
+        return Response(json.dumps("Invalid sessionid provided"), status=400, mimetype="application/json")
+            
+    mycursor.execute(f"SELECT * FROM users WHERE id=\"{usersessionid}\"")
+
+    user = mycursor.fetchone()
+    
+    if user == None:
+        return Response(json.dumps("Invalid sessionid provided 2"), status=400, mimetype="application/json")
+    
+    print(user)
+
+    # curtime = int( time.time() )
+    # sql = ""
+    # if(parentid_ == None):
+    #     if(senderid_ != None):
+    #         sql = f"INSERT INTO board (userid, senderip, message, timestamp) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\")"
+    #     else:
+    #         sql = f"INSERT INTO board (senderip, message, timestamp) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\")"
+    # else:
+    #     if(senderid_ != None):
+    #         sql = f"INSERT INTO board (userid, senderip, message, timestamp, parentid) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\", \"{parentid_}\")"
+    #     else:
+    #         sql = f"INSERT INTO board (senderip, message, timestamp, parentid) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\", \"{parentid_}\")"
+    # mycursor.execute(sql)
+
+    # mydb.commit()
+        
+    return Response("Created", status=201)
+
+
 @app.route("/api/v1/user/create", methods=["POST"])
 def createuser():
     if request.json == None:
