@@ -379,6 +379,9 @@ def ratepost():
     if post == None:
         return Response(json.dumps("Post was not found"), status=500, mimetype="application/json")
     
+    if rating[4] == 0 if rating_ == False else 1:
+        return Response("Nothing changed", status=204)
+    
     sql = ""
     curtime = int( time.time() )
     if rating != None:
