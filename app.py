@@ -380,7 +380,7 @@ def ratepost():
         return Response(json.dumps("Post was not found"), status=500, mimetype="application/json")
     
     print(f"{rating[4]} {0 if rating_ == False else 1}")
-    if rating[4] == 0 if rating_ == False else 1:
+    if rating[4] == (0 if rating_ == False else 1):
         return Response("Nothing changed", status=204)
     
     sql = ""
