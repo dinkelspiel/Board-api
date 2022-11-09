@@ -232,9 +232,6 @@ def getposts():
                 return Response(json.dumps("Sessionid expired"), status=400, mimetype="application/json")
             usersessionid = usersession[1]
 
-        else:
-            return Response(json.dumps("Invalid sessionid provided"), status=400, mimetype="application/json")
-                
         mycursor.execute(f"SELECT * FROM users WHERE id=\"{usersessionid}\"")
 
         user = mycursor.fetchone()
