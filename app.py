@@ -232,6 +232,14 @@ def getposts():
     myresult = mycursor.fetchall()
     
     for i in range(len(myresult)):
+        mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{myresult[i][0]}\" AND rating=1;")
+
+        positiveratings = mycursor.fetchone()[0];
+        
+        mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{myresult[i][0]}\" AND rating=0;")
+
+        negativeratings = mycursor.fetchone()[0];
+        
         mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[i][0]}")
     
         replycount = mycursor.fetchone();
@@ -242,15 +250,6 @@ def getposts():
 
         if(myresult[i][1] != None):
             mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[i][1]}\"")
-            
-            
-        mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{myresult[i][0]}\" AND rating=1;")
-
-        positiveratings = mycursor.fetchone()[0];
-        
-        mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{myresult[i][0]}\" AND rating=0;")
-
-        negativeratings = mycursor.fetchone()[0];
         
         myresult[i] = {
             "id": myresult[i][0], 
