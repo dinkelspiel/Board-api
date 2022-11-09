@@ -286,6 +286,16 @@ def getpost():
     mycursor.execute(f"SELECT parentid FROM board WHERE id={myresult[0]}")
 
     postparentid = mycursor.fetchone();
+    
+    mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{postid_}\" AND rating=1;")
+
+    positiveratings = mycursor.fetchone();
+    
+    mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{postid_}\" AND rating=0;")
+
+    negativeratings = mycursor.fetchone();
+    
+    print(f"{positiveratings} {negativeratings}")
 
     mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[1]}\"")
     myresult = {
@@ -296,7 +306,9 @@ def getpost():
         "message": myresult[3], 
         "timestamp": myresult[4], 
         "replycount": replycount[0], 
-        "parentid": postparentid[0]
+        "parentid": postparentid[0],
+        "positiveratings": positiveratings,
+        "negativeratings": negativeratings
     }
 
     return Response(json.dumps(myresult), status=200, mimetype="application/json")
@@ -347,26 +359,29 @@ def ratepost():
     
     if user == None:
         return Response(json.dumps("Invalid sessionid provided 2"), status=400, mimetype="application/json")
+
+    mycursor.execute(f"SELECT * FROM ratings WHERE postid=\"{postid_}\" AND userid=\"{user[0]}\"")
+
+    rating = mycursor.fetchone()
     
-    print(user)
+    mycursor.execute(f"SELECT * FROM board WHERE postid=\"{postid_}\"")
 
-    # curtime = int( time.time() )
-    # sql = ""
-    # if(parentid_ == None):
-    #     if(senderid_ != None):
-    #         sql = f"INSERT INTO board (userid, senderip, message, timestamp) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\")"
-    #     else:
-    #         sql = f"INSERT INTO board (senderip, message, timestamp) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\")"
-    # else:
-    #     if(senderid_ != None):
-    #         sql = f"INSERT INTO board (userid, senderip, message, timestamp, parentid) VALUES (\"{senderid_}\", \"{ip_}\", \"{message_}\", \"{curtime}\", \"{parentid_}\")"
-    #     else:
-    #         sql = f"INSERT INTO board (senderip, message, timestamp, parentid) VALUES (\"{ip_}\", \"{message_}\", \"{curtime}\", \"{parentid_}\")"
-    # mycursor.execute(sql)
+    post = mycursor.fetchone()
 
-    # mydb.commit()
+    if post == None:
+        return Response(json.dumps("Post was not found"), status=500, mimetype="application/json")
+    
+    sql = ""
+    curtime = int( time.time() )
+    if rating != None:
+        sql = f"UPDATE ratings SET rating=\"{0 if rating_ == False else 1}\" WHERE postid=\"{postid_}\" AND userid=\"{user[0]}\""
+    else:
+        sql = f"INSERT INTO ratings (postid, userid, senderid, rating, timestamp) VALUES (\"{postid_}\", \"{user[0]}\", \"{post[1]}\", \"{0 if rating_ == False else 1}\", \"{curtime}\")"
+
+    mycursor.execute(sql)
+    mydb.commit()
         
-    return Response("Created", status=201)
+    return Response("Rated post", status=200)
 
 
 @app.route("/api/v1/user/create", methods=["POST"])
