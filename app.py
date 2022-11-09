@@ -364,7 +364,7 @@ def ratepost():
 
     rating = mycursor.fetchone()
     
-    mycursor.execute(f"SELECT * FROM board WHERE postid=\"{postid_}\"")
+    mycursor.execute(f"SELECT * FROM board WHERE id=\"{postid_}\"")
 
     post = mycursor.fetchone()
 
