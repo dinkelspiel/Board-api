@@ -164,15 +164,6 @@ def sendpost():
                 return Response(json.dumps("Sessionid expired"), status=500, mimetype="application/json")
 
             senderid_ = myresult[1]
-            
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="willem",
-        password="Dinkel2006!",
-        database="shykeiichicom"
-    )
-
-    mycursor = mydb.cursor()
 
     curtime = int( time.time() )
     sql = ""
@@ -196,6 +187,8 @@ def sendpost():
 def getposts():
     start = escape(request.args.get("start"))
     parentid = escape(request.args.get("parentid"))
+    
+    sessionid = escape(request.args.get("sessionid"))
     
     if(not start.isdecimal()):
         return Response(json.dumps("Not a number"), status=400, mimetype="application/json")
@@ -224,6 +217,28 @@ def getposts():
     if(startint == endint + 1):
         return Response(json.dumps("No more posts"), status=204, mimetype="application/json")
     
+    user = None
+    
+    if(sessionid != None):
+        mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sessionid}\"")
+
+        usersession = mycursor.fetchone()
+
+        usersessionid = None
+
+        if(usersession != None):
+            if(int(time.time() - int(usersession[2])) > 2419200):
+                mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sessionid}\"")
+                return Response(json.dumps("Sessionid expired"), status=400, mimetype="application/json")
+            usersessionid = usersession[1]
+
+        else:
+            return Response(json.dumps("Invalid sessionid provided"), status=400, mimetype="application/json")
+                
+        mycursor.execute(f"SELECT * FROM users WHERE id=\"{usersessionid}\"")
+
+        user = mycursor.fetchone()
+    
     if(str(parentid) == "None"):
         mycursor.execute(f"SELECT * FROM board WHERE parentid is NULL ORDER BY id desc limit 10 OFFSET {startint}")
     else:
@@ -239,6 +254,12 @@ def getposts():
         mycursor.execute(f"SELECT COUNT(*) FROM ratings WHERE postid=\"{myresult[i][0]}\" AND rating=0;")
 
         negativeratings = mycursor.fetchone()[0];
+        
+        userrating = None
+        if user != None:
+            mycursor.execute(f"SELECT rating FROM ratings WHERE userid=\"{user[0]}\" AND postid=\"{myresult[i][0]}\"")
+
+            userrating = mycursor.fetchone()[0];
         
         mycursor.execute(f"SELECT COUNT(parentid) FROM board WHERE parentid={myresult[i][0]}")
     
@@ -260,6 +281,7 @@ def getposts():
             "timestamp": myresult[i][4], 
             "replycount": replycount[0], 
             "parentid": postparentid[0],
+            "userrating": userrating,
             "positiveratings": positiveratings,
             "negativeratings": negativeratings
         }
@@ -270,6 +292,7 @@ def getposts():
 @app.route("/api/v1/board/getsingle", methods=["GET"])
 def getpost():
     postid_ = escape(request.args.get("postid"))
+    sessionid = escape(request.args.get("sessionid"))
     
     if(not postid_.isdecimal()):
         return Response(json.dumps("Postid is not a number"), status=400, mimetype="application/json")
@@ -284,6 +307,30 @@ def getpost():
     )
 
     mycursor = mydb.cursor()
+    
+    
+    user = None
+    
+    if(sessionid != None):
+        mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sessionid}\"")
+
+        usersession = mycursor.fetchone()
+
+        usersessionid = None
+
+        if(usersession != None):
+            if(int(time.time() - int(usersession[2])) > 2419200):
+                mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sessionid}\"")
+                return Response(json.dumps("Sessionid expired"), status=400, mimetype="application/json")
+            usersessionid = usersession[1]
+
+        else:
+            return Response(json.dumps("Invalid sessionid provided"), status=400, mimetype="application/json")
+                
+        mycursor.execute(f"SELECT * FROM users WHERE id=\"{usersessionid}\"")
+
+        user = mycursor.fetchone()
+    
     
     mycursor.execute(f"SELECT * FROM board WHERE id={postid}")
     
@@ -305,6 +352,12 @@ def getpost():
 
     negativeratings = mycursor.fetchone()[0];
 
+    userrating = None
+    if user != None:
+        mycursor.execute(f"SELECT rating FROM ratings WHERE userid=\"{user[0]}\" AND postid=\"{myresult[i][0]}\"")
+
+        userrating = mycursor.fetchone()[0];
+    
     mycursor.execute(f"SELECT username FROM users WHERE id=\"{myresult[1]}\"")
     myresult = {
         "id": myresult[0], 
@@ -315,6 +368,7 @@ def getpost():
         "timestamp": myresult[4], 
         "replycount": replycount[0], 
         "parentid": postparentid[0],
+        "userrating": userrating,
         "positiveratings": positiveratings,
         "negativeratings": negativeratings
     }
