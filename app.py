@@ -731,7 +731,7 @@ def usersget():
         "passwordchanged": user[5] 
     }
         
-    return Response(json.dumps(), status=200, mimetype="application/json")
+    return Response(json.dumps(result), status=200, mimetype="application/json")
 
 
 @app.route("/api/v1/user/delete", methods=["POST"])
