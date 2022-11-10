@@ -759,6 +759,7 @@ def userremove():
 
     mycursor.execute("SELECT * FROM sessions WHERE sessionid=\"" + requestSessionid + "\"")
 
+    print(requestSessionid)
     myresult = mycursor.fetchone()
     
     if myresult == None:
