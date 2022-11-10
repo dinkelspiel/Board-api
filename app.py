@@ -669,6 +669,7 @@ def usersget():
     requestSessionid = request.args.get("sessionid")
     requestUserid = request.args.get("userid")
  
+
     if 'sessionid' in request.args:
         requestSessionid = str(escape(request.args["sessionid"])).lower()
     else:
@@ -692,6 +693,7 @@ def usersget():
 
     myresult = mycursor.fetchone()
     
+    print(requestSessionid)
     if myresult == None:
         return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
    
