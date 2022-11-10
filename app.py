@@ -693,7 +693,7 @@ def usersget():
 
     myresult = mycursor.fetchone()
     
-    print(requestSessionid)
+    # print(requestSessionid)
     if myresult == None:
         return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
    
