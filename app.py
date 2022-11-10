@@ -676,7 +676,7 @@ def usersget():
         return Response(json.dumps("No sessionid was provided."), status=400, mimetype='application/json')
 
     if 'userid' in request.args:
-        requestSessionid = str(escape(request.args["userid"])).lower()
+        requestUserid = str(escape(request.args["userid"])).lower()
     else:
         return Response(json.dumps("No userid was provided."), status=400, mimetype='application/json')
 
