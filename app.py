@@ -661,7 +661,7 @@ def usersgetall():
         
     return Response(json.dumps(users), status=200, mimetype="application/json")
 
-@app.route("/api/v1/user/get", methods=["GET"])
+@app.route("/api/v1/users/get", methods=["GET"])
 def usersget():
     if request.args == None:
         return Response(json.dumps("No arguments were provided"), status=400, mimetype="application/json")
