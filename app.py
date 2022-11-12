@@ -353,7 +353,7 @@ def getpost():
 
     userrating = None
     if user != None:
-        mycursor.execute(f"SELECT rating FROM ratings WHERE userid=\"{user[0]}\" AND postid=\"{myresult[i][0]}\"")
+        mycursor.execute(f"SELECT rating FROM ratings WHERE userid=\"{user[0]}\" AND postid=\"{myresult[0]}\"")
 
         userrating = mycursor.fetchone();
         if(userrating != None):
