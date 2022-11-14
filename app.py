@@ -453,6 +453,126 @@ def ratepost():
     return Response("Updated post rating" if rating == None else "Rated post", status=200 if rating == None else 201)
 
 
+@app.route("/api/v1/board/delete", methods=["PUT"])
+def ratepost():
+    sessionid_ = request.json.get("sessionid")
+    postid_ = request.json.get("postid")
+
+    if(sessionid_ == None):
+        return Response(json.dumps("No Sessionid provided"), status=400, mimetype="application/json")
+
+    if(postid_ == None):
+        return Response(json.dumps("No postid provided"), status=400, mimetype="application/json")
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+
+    mycursor = mydb.cursor()
+
+    mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sessionid_}\"")
+
+    usersession = mycursor.fetchone()
+
+    usersessionid = None
+
+    if(usersession != None):
+        if(int(time.time() - int(usersession[2])) > 2419200):
+            mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sessionid_}\"")
+            return Response(json.dumps("Sessionid expired"), status=400, mimetype="application/json")
+        usersessionid = usersession[1]
+
+    else:
+        return Response(json.dumps("Invalid sessionid provided"), status=400, mimetype="application/json")
+            
+    mycursor.execute(f"SELECT * FROM users WHERE id=\"{usersessionid}\"")
+
+    user = mycursor.fetchone()
+    
+    if user == None:
+        return Response(json.dumps("Invalid sessionid provided 2"), status=400, mimetype="application/json")
+    
+    
+    mycursor.execute(f"SELECT * FROM board WHERE id=\"{postid_}\"")
+
+    post = mycursor.fetchone()
+
+    if post == None:
+        return Response(json.dumps("Post was not found"), status=500, mimetype="application/json")
+    
+    if post[1] != user[0]:
+        if user[0] != 1:
+            return Response(json.dumps("You do not own this post"), status=500, mimetype="application/json")
+    
+    sql = f"DELETE FROM board WHERE id={postid_}"
+    
+    mycursor.execute(sql)
+    mydb.commit()
+        
+    return Response("Deleted Post", status=200, mimetype="application/json")
+
+
+@app.route("/api/v1/board/deleterange", methods=["PUT"])
+def ratepost():
+    sessionid_ = request.json.get("sessionid")
+    minr_ = request.json.get("min")
+    maxr_ = request.json.get("max")
+
+    if(sessionid_ == None):
+        return Response(json.dumps("No Sessionid provided"), status=400, mimetype="application/json")
+
+    if(minr_ == None):
+        return Response(json.dumps("No min provided"), status=400, mimetype="application/json")
+
+    if(maxr_ == None):
+        return Response(json.dumps("No max provided"), status=400, mimetype="application/json")
+
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+
+    mycursor = mydb.cursor()
+
+    mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sessionid_}\"")
+
+    usersession = mycursor.fetchone()
+
+    usersessionid = None
+
+    if(usersession != None):
+        if(int(time.time() - int(usersession[2])) > 2419200):
+            mycursor.execute("DELETE FROM sessions WHERE sessionid=\"{sessionid_}\"")
+            return Response(json.dumps("Sessionid expired"), status=400, mimetype="application/json")
+        usersessionid = usersession[1]
+
+    else:
+        return Response(json.dumps("Invalid sessionid provided"), status=400, mimetype="application/json")
+            
+    mycursor.execute(f"SELECT * FROM users WHERE id=\"{usersessionid}\"")
+
+    user = mycursor.fetchone()
+    
+    if user == None:
+        return Response(json.dumps("Invalid sessionid provided 2"), status=400, mimetype="application/json")
+    
+    if user[0] != 1:
+        return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
+    
+    sql = f"DELETE FROM board WHERE id BETWEEN {minr_} AND {maxr_}"
+    
+    mycursor.execute(sql)
+    mydb.commit()
+        
+    return Response(f"Deleted Post from {minr_} to {maxr_}", status=200, mimetype="application/json")
+
+
 @app.route("/api/v1/user/create", methods=["POST"])
 def createuser():
     if request.json == None:
