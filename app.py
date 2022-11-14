@@ -454,7 +454,7 @@ def ratepost():
 
 
 @app.route("/api/v1/board/delete", methods=["PUT"])
-def ratepost():
+def boarddelete():
     sessionid_ = request.json.get("sessionid")
     postid_ = request.json.get("postid")
 
@@ -516,7 +516,7 @@ def ratepost():
 
 
 @app.route("/api/v1/board/deleterange", methods=["PUT"])
-def ratepost():
+def boarddeleterange():
     sessionid_ = request.json.get("sessionid")
     minr_ = request.json.get("min")
     maxr_ = request.json.get("max")
