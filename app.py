@@ -144,15 +144,16 @@ def sendpost():
     if(len(message_) > 300):
         return Response(json.dumps("Message is too long"), status=400, mimetype="application/json")
 
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+
+    mycursor = mydb.cursor()
+
     if sendersessionid_ != None:
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="willem",
-            password="Dinkel2006!",
-            database="shykeiichicom"
-        )
-    
-        mycursor = mydb.cursor()
 
         mycursor.execute(f"SELECT * FROM sessions WHERE sessionid=\"{sendersessionid_}\"")
 
