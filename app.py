@@ -1114,6 +1114,7 @@ def userchangepassword():
     mycursor.execute(f"UPDATE users SET password=\"{requestPassword}\" WHERE id=\"{forgot_password_object[1]}\"")
     mycursor.execute(f"UPDATE users SET passwordchanged=\"{curtime}\" WHERE id=\"{forgot_password_object[1]}\"")
     mycursor.execute(f"DELETE FROM forgot_password WHERE address=\"{requestAddress}\"")
+    mycursor.execute(f"DELETE FROM sessions WHERE userid=\"{forgot_password_object[1]}\"")
 
     mydb.commit()
         
