@@ -1086,6 +1086,7 @@ def userchangepassword():
 
     requestAddress = request.json.get("address")
  
+    print(requestAddress)
     if requestAddress == None:
         return Response(json.dumps("No address was provided"), status=400, mimetype="application/json")
 
