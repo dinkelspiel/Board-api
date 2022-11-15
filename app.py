@@ -1103,7 +1103,7 @@ def userchangepassword():
     
     mycursor = mydb.cursor()
 
-    mycursor.execute(f"SELECT * FROM forgot_password WHERE address={requestAddress}")
+    mycursor.execute(f"SELECT * FROM forgot_password WHERE address=\"{requestAddress}\"")
 
     forgot_password_object = mycursor.fetchone()
     
@@ -1111,9 +1111,9 @@ def userchangepassword():
         return Response(json.dumps("Invalid address"), status=400, mimetype="application/json")
 
     curtime = int( time.time() )
-    mycursor.execute(f"UPDATE users SET password={requestPassword} where id={forgot_password_object[1]}")
-    mycursor.execute(f"UPDATE users SET passwordchanged={curtime} where id={forgot_password_object[1]}")
-    mycursor.execute(f"DELETE FROM forgot_password WHERE address={requestAddress}")
+    mycursor.execute(f"UPDATE users SET password={requestPassword} where id=\"{forgot_password_object[1]}\"")
+    mycursor.execute(f"UPDATE users SET passwordchanged={curtime} where id=\"{forgot_password_object[1]}\"")
+    mycursor.execute(f"DELETE FROM forgot_password WHERE address=\"{requestAddress}\"")
 
     mydb.commit()
         
