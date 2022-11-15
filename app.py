@@ -130,6 +130,14 @@ def scriptsloginjs():
 def scriptsheaderjs():
     return send_file("./22widissisnu/" + "scripts/header.js")
 
+@app.route("/forgotpasswd.html", methods=["GET"])
+def scriptsheaderjs():
+    return send_file("./22widissisnu/" + "forgotpasswd.html")
+
+@app.route("/pages/forgotpasswd/forgotpasswd.js", methods=["GET"])
+def scriptsheaderjs():
+    return send_file("./22widissisnu/" + "pages/forgotpasswd/forgotpasswd.js")
+
 @app.route("/api/v1/board/send", methods=["PUT"])
 def sendpost():
     message_ = request.json.get("message")
@@ -922,7 +930,7 @@ def userremove():
     return Response(json.dumps("User removed"), status=200, mimetype="application/json")
 
 
-@app.route("/api/v1/user/edit", methods=["POST"])
+@app.route("/api/v1/admin/user/edit", methods=["POST"])
 def userupdate():
     if request.json == None:
         return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
@@ -1069,5 +1077,47 @@ def userforgotpassword():
     mydb.commit()
         
     return Response(json.dumps(f"https://22widi.ssis.nu/forgotpasswd.html?id={address}"), status=200, mimetype="application/json")
+
+
+@app.route("/api/v1/user/changepassword", methods=["POST"])
+def userupdate():
+    if request.json == None:
+        return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
+
+    requestAddress = request.json.get("address")
+ 
+    if requestAddress == None:
+        return Response(json.dumps("No address was provided"), status=400, mimetype="application/json")
+
+    requestPassword = request.json.get("password")
+ 
+    if requestPassword == None:
+        return Response(json.dumps("No password was provided"), status=400, mimetype="application/json")
+
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="willem",
+        password="Dinkel2006!",
+        database="shykeiichicom"
+    )
+    
+    mycursor = mydb.cursor()
+
+    mycursor.execute(f"SELECT * FROM forgot_password WHERE address={requestAddress}")
+
+    forgot_password_object = mycursor.fetchone()
+    
+    if forgot_password_object == None:
+        return Response(json.dumps("Invalid address"), status=400, mimetype="application/json")
+
+    curtime = int( time.time() )
+    mycursor.execute(f"UPDATE users SET password={requestPassword} where id={forgot_password_object[1]}")
+    mycursor.execute(f"UPDATE users SET passwordchanged={curtime} where id={forgot_password_object[1]}")
+    mycursor.execute(f"DELETE FROM forgot_password WHERE address={requestAddress}")
+
+    mydb.commit()
+        
+    return Response(json.dumps("Password Update"), status=200, mimetype="application/json")
+
 
 app.run(host="192.168.144.6", port="8080")
