@@ -131,11 +131,11 @@ def scriptsheaderjs():
     return send_file("./22widissisnu/" + "scripts/header.js")
 
 @app.route("/forgotpasswd.html", methods=["GET"])
-def scriptsheaderjs():
+def forgotpasswdhtml():
     return send_file("./22widissisnu/" + "forgotpasswd.html")
 
 @app.route("/pages/forgotpasswd/forgotpasswd.js", methods=["GET"])
-def scriptsheaderjs():
+def forgotpasswdjs():
     return send_file("./22widissisnu/" + "pages/forgotpasswd/forgotpasswd.js")
 
 @app.route("/api/v1/board/send", methods=["PUT"])
