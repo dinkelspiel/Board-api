@@ -1080,7 +1080,7 @@ def userforgotpassword():
 
 
 @app.route("/api/v1/user/changepassword", methods=["POST"])
-def userupdate():
+def userchangepassword():
     if request.json == None:
         return Response(json.dumps("No body was provided"), status=400, mimetype="application/json")
 
