@@ -2,7 +2,7 @@ from flask import Blueprint, Flask, render_template, request, Response, send_fil
 import mysql.connector
 import json, time, uuid
 from markupsafe import escape
-from functions import isValidSession, isUserAdmin
+from functions import isValidSession, getUserPermission
 
 user = Blueprint('user', __name__, template_folder='templates')
 
@@ -174,7 +174,7 @@ def usersgetall():
     if(isValidSession(requestSessionid) == False):
         return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
     
-    if(not isUserAdmin(myresult[1])):
+    if(getUserPermission(myresult[1]) != 1):
         return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
     
     mycursor.execute("SELECT * FROM users")
@@ -236,7 +236,7 @@ def usersget():
     if(isValidSession(requestSessionid) == False):
         return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
     
-    if(not isUserAdmin(myresult[1])):
+    if(getUserPermission(myresult[1]) != 1):
         return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
     
     mycursor.execute(f"SELECT * FROM users WHERE id={requestUserid}")
@@ -290,7 +290,7 @@ def userremove():
     if(isValidSession(requestSessionid) == False):
         return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
     
-    if(not isUserAdmin(myresult[1])):
+    if(getUserPermission(myresult[1]) != 1):
         return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
     
     mycursor.execute(f"SELECT * FROM users WHERE id=\"{requestUserID}\"")
@@ -341,7 +341,7 @@ def userupdate():
     if(isValidSession(requestSessionid) == False):
         return Response(json.dumps("Invalid sessionid"), status=400, mimetype="application/json")
     
-    if(not isUserAdmin(myresult[1])):
+    if(getUserPermission(myresult[1]) != 1):
         return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
     
     mycursor.execute(f"SELECT * FROM users WHERE id=\"{requestEditUserIDOriginal}\"")  
@@ -394,7 +394,7 @@ def userforgotpassword():
     if(isValidSession(requestSessionid) == False):
         return Response(json.dufmps("Invalid sessionid"), status=400, mimetype="application/json")
     
-    if(not isUserAdmin(myresult[1])):
+    if(getUserPermission(myresult[1]) != 1):
         return Response(json.dumps("User not admin"), status=400, mimetype="application/json")
     
     mycursor.execute(f"SELECT * FROM users WHERE id=\"{requestUserID}\"")  
