@@ -2,7 +2,7 @@ from flask import Blueprint, Flask, render_template, request, Response, send_fil
 import mysql.connector
 import json, time, uuid
 from markupsafe import escape
-from app import isValidSession, isUserAdmin
+from functions import isValidSession, isUserAdmin
 
 user = Blueprint('user', __name__, template_folder='templates')
 
